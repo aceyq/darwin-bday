@@ -195,20 +195,28 @@ body {
 
 .letter-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.letter-row {
+  display: flex;
   gap: 5px;
   justify-content: center;
 }
 
 .letter-btn {
-  width: 31px;
-  height: 31px;
+  flex: 1;
+  max-width: 36px;
+  height: 38px;
+  padding: 0;
   border-radius: 8px;
   border: 1.5px solid #f4c0ce;
   background: #fff0f5;
   color: #c96b8e;
   font-family: 'Quicksand', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   touch-action: manipulation;

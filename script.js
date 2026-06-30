@@ -260,16 +260,26 @@ function loadHangman(level) {
   });
   area.appendChild(wordDisplay);
 
-  // Letter grid
+  // Letter grid — QWERTY rows
+  const keyRows = [
+    ['Q','W','E','R','T','Y','U','I','O','P'],
+    ['A','S','D','F','G','H','J','K','L'],
+    ['Z','X','C','V','B','N','M']
+  ];
   const grid = document.createElement('div');
   grid.className = 'letter-grid';
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
-    const btn = document.createElement('button');
-    btn.className = 'letter-btn';
-    btn.textContent = l;
-    btn.dataset.letter = l;
-    btn.addEventListener('click', () => guessLetter(l));
-    grid.appendChild(btn);
+  keyRows.forEach(row => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'letter-row';
+    row.forEach(l => {
+      const btn = document.createElement('button');
+      btn.className = 'letter-btn';
+      btn.textContent = l;
+      btn.dataset.letter = l;
+      btn.addEventListener('click', () => guessLetter(l));
+      rowEl.appendChild(btn);
+    });
+    grid.appendChild(rowEl);
   });
   area.appendChild(grid);
 }
