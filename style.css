@@ -287,6 +287,7 @@ body {
   color: #7a6370;
   line-height: 1.85;
   margin-bottom: 2rem;
+  text-wrap: balance;
 }
 
 .photo-gallery {
@@ -490,44 +491,6 @@ video {
 /* ---- shared keyframes ---- */
 @keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
-
-/* ---- skip button ---- */
-.skip-hint {
-  position: fixed;
-  bottom: 1.2rem;
-  right: 1.2rem;
-  display: none;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  z-index: 50;
-}
-.skip-hint.visible { display: flex; }
-
-.skip-arrow {
-  font-family: 'Dancing Script', cursive;
-  font-size: 0.8rem;
-  color: #f4a7c3;
-  animation: bounce-down 1.8s ease-in-out infinite;
-}
-@keyframes bounce-down {
-  0%, 100% { transform: translateY(0);  }
-  50%       { transform: translateY(5px); }
-}
-
-.skip-jump {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1rem;
-  color: #c096a8;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1.5px dashed #f4c0ce;
-  border-radius: 20px;
-  padding: 0.35rem 1rem;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: color 0.15s, border-color 0.15s;
-}
-.skip-jump:hover { color: #c96b8e; border-color: #f4a7c3; }
 
 /* ---- mobile ---- */
 @media (max-width: 400px) {

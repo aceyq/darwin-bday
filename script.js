@@ -141,8 +141,7 @@ const levels = [
     type: 'wordle',
     word: 'HAPPY',
     title: 'guess the word 💭',
-    hint: '',
-    extraHint: 'hint: how do i feel about you? 💕'
+    hint: ''
   },
   {
     type: 'hangman',
@@ -367,9 +366,6 @@ function evaluateWordleGuess() {
       s.currentRow++;
       s.currentCol = 0;
       s.wrongCount++;
-      if (s.wrongCount === 3 && levels[currentLevel].extraHint) {
-        document.getElementById('hint-text').textContent = levels[currentLevel].extraHint;
-      }
       if (s.currentRow >= s.maxGuesses) {
         document.getElementById('hint-text').textContent = `the word was ${s.word.toLowerCase()}! 💕 onwards~`;
         s.done = true;
@@ -534,7 +530,6 @@ function finishLevel() {
   if (isLast) {
     showPasswordScreen(() => showGiftAnimation(() => {
       localStorage.setItem('bday-completed', '1');
-      document.getElementById('skip-hint').classList.add('visible');
       showScreen('screen-final');
       makeSparkles('final-stars', 30);
     }));
@@ -542,8 +537,8 @@ function finishLevel() {
     const remaining = levels.length - currentLevel - 1;
     document.getElementById('between-msg').textContent = 'yay!! 🎉';
     document.getElementById('between-sub').textContent = remaining === 1
-      ? 'so close!! just 1 more 🎊✨'
-      : `keep going!! ${remaining} more 🎈🎂`;
+      ? 'so close!! just 1 more 🎊'
+      : `keep going!! ${remaining} more 🎈`;
     document.getElementById('next-btn').textContent = 'next level →';
     showScreen('screen-between');
   }
@@ -597,7 +592,8 @@ function showPasswordScreen(onSuccess) {
     const val = input.value.replace(/\D/g, '');
     if (val === '06302004') {
       overlay.classList.add('fade-out');
-      setTimeout(() => { overlay.remove(); onSuccess(); }, 500);
+      setTimeout(() => onSuccess(), 300);
+      setTimeout(() => overlay.remove(), 500);
     } else {
       input.classList.add('shake');
       error.textContent = 'not quite! 🙈 try again';
@@ -627,7 +623,7 @@ function showGiftAnimation(onDone) {
 
   const msgEl = document.createElement('p');
   msgEl.className = 'gift-msg';
-  msgEl.textContent = 'gift unlocked!! 🎊';
+  msgEl.textContent = 'surprise!! 🎊';
   overlay.appendChild(msgEl);
 
   // "Open" the gift after wiggle
@@ -684,17 +680,5 @@ function goFullscreen() {
   else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
 }
 
-// ---- Skip to end (dev shortcut, only after first playthrough) ----
-function skipToEnd() {
-  document.removeEventListener('keydown', handleWordleKey);
-  const overlay = document.querySelector('.gift-overlay');
-  if (overlay) overlay.remove();
-  showScreen('screen-final');
-  makeSparkles('final-stars', 30);
-}
-
 // ---- Init ----
 makeSparkles('sparkles', 20);
-if (localStorage.getItem('bday-completed')) {
-  document.getElementById('skip-hint').classList.add('visible');
-}
