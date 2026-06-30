@@ -303,12 +303,6 @@ function handleWordleInput(key) {
       shakeWordleRow(s.currentRow);
       return;
     }
-    const guess = s.guesses[s.currentRow].join('');
-    if (!VALID_WORDS.has(guess)) {
-      shakeWordleRow(s.currentRow);
-      document.getElementById('hint-text').textContent = 'not a word! 🤔';
-      return;
-    }
     evaluateWordleGuess();
     return;
   }
