@@ -34,6 +34,11 @@ body {
   margin-bottom: 1rem;
 }
 
+.game-title {
+  font-size: 1.9rem;
+  margin-bottom: 0.75rem;
+}
+
 .body-text {
   font-size: 1rem;
   color: #7a6370;
@@ -59,61 +64,185 @@ body {
 .btn:hover { background: #e8899b; transform: scale(1.04); }
 .btn:active { transform: scale(0.97); }
 
-/* ---- game ---- */
+/* ---- game shared ---- */
 .level-label { font-size: 0.85rem; color: #c96b8e; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: lowercase; }
+.hint { font-size: 0.85rem; color: #c096a8; margin-top: 1rem; min-height: 1.2em; }
 
-.answer-row {
+/* ---- shared animation ---- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-7px); }
+  40%       { transform: translateX(7px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+.shake { animation: shake 0.45s ease; }
+
+/* ======== WORDLE ======== */
+.wordle-grid {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin: 1.25rem 0 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  margin: 0.5rem 0 0.75rem;
 }
 
-.answer-slot {
+.wordle-row { display: flex; gap: 6px; }
+
+.wordle-cell {
   width: 46px;
   height: 46px;
-  border-radius: 12px;
-  border: 2px dashed #f4a7c3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #c96b8e;
-  background: #fff0f5;
-  transition: all 0.2s;
-}
-.answer-slot.filled { background: #f9d4e2; border-style: solid; }
-
-.bubble-grid {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.bubble {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #ffe0ec;
-  border: 2px solid #f4a7c3;
+  border: 2px solid #f4c0ce;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #c96b8e;
-  cursor: pointer;
-  transition: transform 0.15s, opacity 0.15s;
+  font-family: 'Quicksand', sans-serif;
+  transition: transform 0.1s;
   user-select: none;
 }
-.bubble:active { transform: scale(0.9); }
-.bubble.used { opacity: 0.25; pointer-events: none; }
+.wordle-cell.filled { border-color: #c96b8e; }
+.wordle-cell.correct { background: #f4a7c3; color: white; border-color: #f4a7c3; }
+.wordle-cell.present { background: #ffd6a5; color: #8b5e3c; border-color: #ffd6a5; }
+.wordle-cell.absent  { background: #d4c0c8; color: white; border-color: #d4c0c8; }
 
-.hint { font-size: 0.85rem; color: #c096a8; margin-top: 1rem; min-height: 1.2em; }
+.wordle-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.wordle-key-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.wkey {
+  flex: 1;
+  height: 42px;
+  max-width: 38px;
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+  background: #ffe0ec;
+  color: #c96b8e;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.12s;
+}
+.wkey:active { transform: scale(0.9); }
+.wkey.wide { flex: 1.6; max-width: 58px; font-size: 0.7rem; }
+.wkey.correct { background: #f4a7c3; color: white; }
+.wkey.present { background: #ffd6a5; color: #8b5e3c; }
+.wkey.absent  { background: #d4c0c8; color: #fff; }
+
+/* ======== LOCK ======== */
+.lock-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  transition: all 0.3s;
+}
+
+.dials-row {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+
+.dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.dial-letter {
+  width: 36px;
+  height: 44px;
+  border: 2px solid #f4a7c3;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c96b8e;
+  background: #fff0f5;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  font-family: 'Quicksand', sans-serif;
+}
+.dial-letter.correct {
+  background: #f4a7c3;
+  color: white;
+  border-color: #f4a7c3;
+}
+
+.dial-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #f4a7c3;
+  padding: 2px 8px;
+  border-radius: 6px;
+  line-height: 1;
+  touch-action: manipulation;
+}
+.dial-btn:hover { background: #ffe0ec; }
+.dial-btn:active { transform: scale(0.85); }
+
+/* ======== KEY ======== */
+.lock-display {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s;
+}
+
+.key-prompt {
+  font-size: 0.9rem;
+  color: #c096a8;
+  margin-bottom: 1rem;
+}
+
+.keys-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.key-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 12px 14px;
+  border: 2px solid #f4c0ce;
+  border-radius: 16px;
+  background: #fff0f5;
+  transition: background 0.15s, transform 0.15s;
+  touch-action: manipulation;
+}
+.key-choice:hover { background: #ffe0ec; transform: scale(1.05); }
+.key-choice:active { transform: scale(0.95); }
+.key-choice.wrong { animation: shake 0.45s ease; }
+
+.key-emoji { font-size: 2.2rem; }
+.key-label { font-size: 0.8rem; font-weight: 600; color: #c96b8e; letter-spacing: 0.05em; }
 
 /* ---- final page ---- */
 .final-screen {
@@ -195,6 +324,14 @@ video {
   opacity: 0.6;
 }
 @keyframes float-up {
-  0% { transform: translateY(0) scale(1); opacity: 0.6; }
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
   100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
+}
+
+/* ---- mobile ---- */
+@media (max-width: 400px) {
+  .card { padding: 1.5rem 1rem; }
+  .wordle-cell { width: 40px; height: 40px; font-size: 1.1rem; }
+  .dial-letter { width: 30px; height: 38px; font-size: 1rem; }
+  .dials-row { gap: 5px; }
 }
