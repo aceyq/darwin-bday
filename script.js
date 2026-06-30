@@ -486,15 +486,19 @@ function loadChoice(level) {
 // ---- Level complete ----
 function finishLevel() {
   const isLast = currentLevel === levels.length - 1;
-  document.getElementById('between-msg').textContent = isLast ? '🎉 you did it!!' : '🌸 yay!!';
-  document.getElementById('between-sub').textContent = isLast
-    ? 'now for your actual gift…'
-    : `keep going! ${levels.length - currentLevel - 1} more to go 💕`;
-  document.getElementById('next-btn').textContent = isLast ? 'open your gift 🎁' : 'next level →';
 
   if (isLast) {
-    showGiftAnimation(() => showScreen('screen-between'));
+    // Gift animation → straight to final screen, no between-screen
+    showGiftAnimation(() => {
+      localStorage.setItem('bday-completed', '1');
+      document.getElementById('skip-hint').classList.add('visible');
+      showScreen('screen-final');
+      makeSparkles('final-stars', 30);
+    });
   } else {
+    document.getElementById('between-msg').textContent = '🌸 yay!!';
+    document.getElementById('between-sub').textContent = `keep going! ${levels.length - currentLevel - 1} more to go 💕`;
+    document.getElementById('next-btn').textContent = 'next level →';
     showScreen('screen-between');
   }
 }
@@ -525,13 +529,13 @@ function showGiftAnimation(onDone) {
     giftEl.classList.add('gift-opened');
     msgEl.classList.add('visible');
     createConfetti(confettiEl);
-  }, 900);
+  }, 800);
 
   // Fade out and proceed
   setTimeout(() => {
     overlay.classList.add('fade-out');
-    setTimeout(() => { overlay.remove(); onDone(); }, 600);
-  }, 3000);
+    setTimeout(() => { overlay.remove(); onDone(); }, 500);
+  }, 2200);
 }
 
 function createConfetti(container) {
@@ -573,5 +577,17 @@ function goFullscreen() {
   else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
 }
 
-// ---- Init sparkles on welcome ----
+// ---- Skip to end (dev shortcut, only after first playthrough) ----
+function skipToEnd() {
+  document.removeEventListener('keydown', handleWordleKey);
+  const overlay = document.querySelector('.gift-overlay');
+  if (overlay) overlay.remove();
+  showScreen('screen-final');
+  makeSparkles('final-stars', 30);
+}
+
+// ---- Init ----
 makeSparkles('sparkles', 20);
+if (localStorage.getItem('bday-completed')) {
+  document.getElementById('skip-hint').classList.add('visible');
+}
