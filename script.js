@@ -89,7 +89,50 @@ const VALID_WORDS = new Set([
   'WHERE','WHICH','WHIFF','WHILE','WHIRL','WITCH','WOMAN','WOMEN','WORDS','WORLD',
   'WORRY','WORSE','WORST','WORTH','WOULD','WOVEN','WRATH','WRIST',
   'YACHT','YEARS','YEARN','YIELD','YOURS','YOUTH','YUMMY',
-  'ZEBRA','ZESTY','ZILCH','ZINGY','ZIPPY'
+  'ZEBRA','ZESTY','ZILCH','ZINGY','ZIPPY',
+  // expanded — common guesses, plurals, verb forms
+  'ADIEU','STARE','IRATE','OUTER','INNER','LINER','DINER','TIMER','MINER','INFER',
+  'LEAST','CREAK','FREAK','STEAK','WHEEL','CHOSE','THOSE','WHOSE','ERODE','GUIDE',
+  'GROPE','FLECK','SPECK','WRECK','WROTE','CRANK','FRANK','DRANK','TRUNK','CHUNK',
+  'FLUNK','DRUNK','SLUNK','SLUMP','CLUMP','STUMP','TRUMP','CRUMB','PLUMB','MELON',
+  'FELON','COLON','CHUCK','PLUCK','CLUCK','TRUCK','YEAST','TOAST','COAST','ROAST',
+  'BOAST','GRIST','PASTE','HASTE','TASTE','BASTE','CASTE',
+  // -S plurals & verb forms
+  'PLANS','PLAYS','CLAPS','SNAPS','TRAPS','WRAPS','FLAPS','SWANS','CLANS','SPANS',
+  'GAMES','NAMES','TAMES','DAMES','LANES','MANES','PANES','VANES','WANES','CANES',
+  'RATES','DATES','GATES','HATES','MATES','PATES','SATES','FATES',
+  'TALES','BALES','DALES','GALES','MALES','PALES','SALES','WALES',
+  'SONGS','CALLS','BALLS','FALLS','HALLS','WALLS',
+  'WELLS','BELLS','CELLS','SELLS','TELLS','YELLS',
+  'BILLS','FILLS','GILLS','HILLS','MILLS','PILLS','TILLS','WILLS',
+  'KILLS','ROLLS','POLLS','TOLLS','DOLLS','BULLS','GULLS','HULLS','LULLS','MULLS','PULLS',
+  'FEELS','HEELS','KEELS','PEELS','REELS',
+  'DEALS','HEALS','MEALS','SEALS','TEALS',
+  'RULES','MULES','HOLES','MOLES','POLES','ROLES','SOLES','VOLES',
+  'TONES','BONES','CONES','HONES','ZONES','NOTES','DOTES','MOTES','TOTES','VOTES',
+  'LINES','DINES','FINES','MINES','PINES','WINES','LIMES','TIMES','DIMES','MIMES',
+  'LIVES','DIVES','GIVES','HIVES','JIVES',
+  'TILES','FILES','MILES','PILES','WILES','BIKES','HIKES','LIKES',
+  'BASES','CASES','FACES','LACES','MACES','PACES','RACES','VASES',
+  'HEADS','LEADS','READS','BEADS','REAMS','SEAMS','TEAMS','LOANS','MOANS','ROAMS',
+  'FOAMS','POEMS','TOADS','LOADS','ROADS','OATHS','BATHS','PATHS','MATHS',
+  'BEANS','DEANS','JEANS','LEANS','WEANS',
+  'BEARS','DEARS','FEARS','GEARS','HEARS','NEARS','PEARS','REARS','SEARS','WEARS',
+  'BEATS','FEATS','HEATS','MEATS','SEATS',
+  'BANDS','LANDS','HANDS','SANDS','WANDS','BENDS','FENDS','LENDS','MENDS','SENDS',
+  'TENDS','WENDS','BONDS','PONDS','WINDS','FINDS','BINDS','KINDS','MINDS','RINDS',
+  'DAMPS','CAMPS','LAMPS','RAMPS','VAMPS',
+  'DUNES','FUMES','RUNES','TUNES','CURES','LURES','MUTES','LUTES','GLUES',
+  'DUNKS','FUNKS','HUNKS','JUNKS','PUNKS','BUNKS',
+  'HANGS','BANGS','FANGS','PANGS','TANGS','RINGS','KINGS','SINGS','WINGS','DINGS','PINGS',
+  'HACKS','JACKS','LACKS','PACKS','RACKS','SACKS','TACKS',
+  'BANKS','RANKS','TANKS','YANKS','LINKS','MINKS','PINKS','RINKS','SINKS','WINKS',
+  'TICKS','KICKS','LICKS','PICKS','WICKS','HICKS',
+  'BUCKS','DUCKS','MUCKS','PUCKS','TUCKS',
+  'DOCKS','LOCKS','MOCKS','ROCKS','SOCKS','HOCKS','JOCKS',
+  'DECKS','NECKS','PECKS','SPECS',
+  'CHOPS','DROPS','PROPS','SHOPS','STOPS','CROPS',
+  'CHIPS','DRIPS','GRIPS','SHIPS','SLIPS','TRIPS','WHIPS'
 ]);
 
 // ---- Game data ----
@@ -105,7 +148,7 @@ const levels = [
     type: 'hangman',
     word: 'BIRTHDAY',
     title: 'save the balloons 🎈',
-    hint: 'guess letters to spell the word!'
+    hint: 'each 🎈 is a life — guess letters to spell the word!'
   },
   {
     type: 'choice',
@@ -139,7 +182,8 @@ function makeSparkles(containerId, count = 18) {
     s.style.animationDuration = (4 + Math.random() * 6) + 's';
     s.style.animationDelay = (Math.random() * 5) + 's';
     s.style.fontSize = (8 + Math.random() * 10) + 'px';
-    s.textContent = '♥';
+    const emojis = ['♥','🎈','✨','💕','🌸','💫','🎀','🩷'];
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
     container.appendChild(s);
   }
 }
@@ -488,19 +532,82 @@ function finishLevel() {
   const isLast = currentLevel === levels.length - 1;
 
   if (isLast) {
-    // Gift animation → straight to final screen, no between-screen
-    showGiftAnimation(() => {
+    showPasswordScreen(() => showGiftAnimation(() => {
       localStorage.setItem('bday-completed', '1');
       document.getElementById('skip-hint').classList.add('visible');
       showScreen('screen-final');
       makeSparkles('final-stars', 30);
-    });
+    }));
   } else {
-    document.getElementById('between-msg').textContent = '🌸 yay!!';
-    document.getElementById('between-sub').textContent = `keep going! ${levels.length - currentLevel - 1} more to go 💕`;
+    const remaining = levels.length - currentLevel - 1;
+    document.getElementById('between-msg').textContent = 'yay!! 🎉';
+    document.getElementById('between-sub').textContent = remaining === 1
+      ? 'so close!! just 1 more 🎊✨'
+      : `keep going!! ${remaining} more 🎈🎂`;
     document.getElementById('next-btn').textContent = 'next level →';
     showScreen('screen-between');
   }
+}
+
+// ---- Password screen ----
+function showPasswordScreen(onSuccess) {
+  const overlay = document.createElement('div');
+  overlay.className = 'password-overlay';
+  document.body.appendChild(overlay);
+
+  const title = document.createElement('p');
+  title.className = 'password-title';
+  title.textContent = 'one last thing 🔒';
+  overlay.appendChild(title);
+
+  const sub = document.createElement('p');
+  sub.className = 'password-sub';
+  sub.textContent = 'enter the secret code to unlock your gift';
+  overlay.appendChild(sub);
+
+  const input = document.createElement('input');
+  input.className = 'password-input';
+  input.type = 'text';
+  input.inputMode = 'numeric';
+  input.maxLength = 9;
+  input.placeholder = '••••••••';
+  input.autocomplete = 'off';
+  overlay.appendChild(input);
+
+  const hint = document.createElement('p');
+  hint.className = 'password-hint';
+  hint.textContent = "hint: a very special date 🎂";
+  overlay.appendChild(hint);
+
+  const fmt = document.createElement('p');
+  fmt.className = 'password-format';
+  fmt.textContent = '(mm / dd / yyyy)';
+  overlay.appendChild(fmt);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.textContent = 'unlock 🔓';
+  overlay.appendChild(btn);
+
+  const error = document.createElement('p');
+  error.className = 'password-error';
+  overlay.appendChild(error);
+
+  function tryPassword() {
+    const val = input.value.replace(/\D/g, '');
+    if (val === '06302004') {
+      overlay.classList.add('fade-out');
+      setTimeout(() => { overlay.remove(); onSuccess(); }, 500);
+    } else {
+      input.classList.add('shake');
+      error.textContent = 'not quite! 🙈 try again';
+      setTimeout(() => input.classList.remove('shake'), 450);
+    }
+  }
+
+  btn.addEventListener('click', tryPassword);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') tryPassword(); });
+  setTimeout(() => input.focus(), 150);
 }
 
 // ---- Gift opening animation ----
