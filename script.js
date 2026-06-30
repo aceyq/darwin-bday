@@ -5,26 +5,32 @@ const levels = [
     word: 'HAPPY',
     title: 'guess the word 💭',
     hint: 'like you make me 🥰',
-    extraHint: 'hint: how do you make me feel? 💕'
+    extraHint: 'hint: how do i feel about you? 💕'
   },
   {
-    type: 'lock',
+    type: 'hangman',
     word: 'BIRTHDAY',
-    title: 'crack the code 🔐',
-    hint: 'spin each dial to spell the magic word'
+    title: 'save the balloons 🎈',
+    hint: 'guess letters to spell the word!'
   },
   {
-    type: 'key',
-    word: 'BDAY',
-    title: 'open the gift 🎁',
-    hint: 'find the right key…',
-    decoys: ['LOVE', 'HUGS', 'XOXO']
+    type: 'choice',
+    title: 'important question 🤔',
+    hint: 'choose wisely… 👀',
+    question: "what's my fav nickname for u?",
+    choices: ['beeeebis', 'jpxfrd', 'darwino', 'wiwiwi'],
+    reactions: [
+      'correct!! 🩷',
+      'also correct!! 🫣',
+      'heehee 🥰',
+      'yes always 💕'
+    ]
   }
 ];
 
 let currentLevel = 0;
-let wordleState = null;
-let lockState = null;
+let wordleState  = null;
+let hangmanState = null;
 
 // ---- Sparkles ----
 function makeSparkles(containerId, count = 18) {
@@ -59,38 +65,30 @@ function startGame() {
 // ---- Load a level ----
 function loadLevel() {
   const level = levels[currentLevel];
-
   document.getElementById('level-label').textContent = `level ${currentLevel + 1} of ${levels.length}`;
   document.getElementById('game-title').textContent = level.title;
   document.getElementById('hint-text').textContent = level.hint;
   document.getElementById('game-area').innerHTML = '';
-
-  // Remove any lingering wordle keyboard listener
   document.removeEventListener('keydown', handleWordleKey);
 
-  if (level.type === 'wordle') loadWordle(level);
-  else if (level.type === 'lock')   loadLock(level);
-  else if (level.type === 'key')    loadKey(level);
+  if      (level.type === 'wordle')  loadWordle(level);
+  else if (level.type === 'hangman') loadHangman(level);
+  else if (level.type === 'choice')  loadChoice(level);
 }
 
 // ======== WORDLE ========
 function loadWordle(level) {
   const { word } = level;
   const maxGuesses = 6;
-
   wordleState = {
-    word,
-    maxGuesses,
-    currentRow: 0,
-    currentCol: 0,
+    word, maxGuesses,
+    currentRow: 0, currentCol: 0,
     guesses: Array.from({ length: maxGuesses }, () => Array(word.length).fill('')),
-    done: false,
-    wrongCount: 0
+    done: false, wrongCount: 0
   };
 
   const area = document.getElementById('game-area');
 
-  // Grid
   const grid = document.createElement('div');
   grid.className = 'wordle-grid';
   for (let r = 0; r < maxGuesses; r++) {
@@ -106,10 +104,7 @@ function loadWordle(level) {
     grid.appendChild(row);
   }
   area.appendChild(grid);
-
-  // Virtual keyboard
   area.appendChild(buildWordleKeyboard());
-
   document.addEventListener('keydown', handleWordleKey);
 }
 
@@ -138,8 +133,8 @@ function buildWordleKeyboard() {
 }
 
 function handleWordleKey(e) {
-  if (e.key === 'Enter')          handleWordleInput('ENTER');
-  else if (e.key === 'Backspace') handleWordleInput('⌫');
+  if (e.key === 'Enter')              handleWordleInput('ENTER');
+  else if (e.key === 'Backspace')     handleWordleInput('⌫');
   else if (/^[a-zA-Z]$/.test(e.key)) handleWordleInput(e.key.toUpperCase());
 }
 
@@ -157,17 +152,16 @@ function handleWordleInput(key) {
     }
     return;
   }
-
   if (key === 'ENTER') {
     if (s.currentCol < s.word.length) {
-      document.getElementById(`wrow-${s.currentRow}`).classList.add('shake');
-      setTimeout(() => document.getElementById(`wrow-${s.currentRow}`)?.classList.remove('shake'), 450);
+      const row = document.getElementById(`wrow-${s.currentRow}`);
+      row.classList.add('shake');
+      setTimeout(() => row?.classList.remove('shake'), 450);
       return;
     }
     evaluateWordleGuess();
     return;
   }
-
   if (s.currentCol < s.word.length) {
     s.guesses[s.currentRow][s.currentCol] = key;
     const cell = document.getElementById(`wcell-${s.currentRow}-${s.currentCol}`);
@@ -182,36 +176,22 @@ function handleWordleInput(key) {
 function evaluateWordleGuess() {
   const s = wordleState;
   const guess = s.guesses[s.currentRow];
-  const word = s.word;
+  const word  = s.word;
   const result = Array(word.length).fill('absent');
-
-  // Count available letters in target
   const pool = {};
   word.split('').forEach(l => pool[l] = (pool[l] || 0) + 1);
 
-  // Pass 1 — correct positions
   for (let i = 0; i < word.length; i++) {
-    if (guess[i] === word[i]) {
-      result[i] = 'correct';
-      pool[guess[i]]--;
-    }
+    if (guess[i] === word[i]) { result[i] = 'correct'; pool[guess[i]]--; }
   }
-  // Pass 2 — present elsewhere
   for (let i = 0; i < word.length; i++) {
     if (result[i] === 'correct') continue;
-    if (pool[guess[i]] > 0) {
-      result[i] = 'present';
-      pool[guess[i]]--;
-    }
+    if (pool[guess[i]] > 0) { result[i] = 'present'; pool[guess[i]]--; }
   }
 
-  // Animate cells with flip delay
   result.forEach((state, i) => {
     setTimeout(() => {
-      const cell = document.getElementById(`wcell-${s.currentRow}-${i}`);
-      if (cell) cell.classList.add(state);
-
-      // Update keyboard key colour (correct > present > absent)
+      document.getElementById(`wcell-${s.currentRow}-${i}`)?.classList.add(state);
       const keyEl = document.querySelector(`.wkey[data-wkey="${guess[i]}"]`);
       if (keyEl) {
         const cur = keyEl.dataset.state;
@@ -225,7 +205,6 @@ function evaluateWordleGuess() {
   });
 
   const won = result.every(r => r === 'correct');
-
   setTimeout(() => {
     if (won) {
       document.getElementById('hint-text').textContent = '🌸 you got it!!';
@@ -249,107 +228,126 @@ function evaluateWordleGuess() {
   }, word.length * 120 + 250);
 }
 
-// ======== LOCK ========
-function loadLock(level) {
+// ======== HANGMAN (balloon edition) ========
+function loadHangman(level) {
   const { word } = level;
-  lockState = { word, dials: Array(word.length).fill(0) };
+  const maxWrong = 6;
+  hangmanState = { word, guessed: new Set(), wrongCount: 0, maxWrong, done: false };
 
   const area = document.getElementById('game-area');
 
-  const lockEmoji = document.createElement('span');
-  lockEmoji.className = 'lock-emoji';
-  lockEmoji.id = 'lock-emoji';
-  lockEmoji.textContent = '🔒';
-  area.appendChild(lockEmoji);
-
-  const dialsRow = document.createElement('div');
-  dialsRow.className = 'dials-row';
-
-  for (let i = 0; i < word.length; i++) {
-    const dial = document.createElement('div');
-    dial.className = 'dial';
-
-    const up = document.createElement('button');
-    up.className = 'dial-btn';
-    up.textContent = '▲';
-    up.addEventListener('click', () => spinDial(i, 1));
-
-    const letter = document.createElement('div');
-    letter.className = 'dial-letter';
-    letter.id = `dial-${i}`;
-    letter.textContent = 'A';
-
-    const down = document.createElement('button');
-    down.className = 'dial-btn';
-    down.textContent = '▼';
-    down.addEventListener('click', () => spinDial(i, -1));
-
-    dial.append(up, letter, down);
-    dialsRow.appendChild(dial);
+  // Balloons
+  const balloonsRow = document.createElement('div');
+  balloonsRow.className = 'balloons-row';
+  for (let i = 0; i < maxWrong; i++) {
+    const b = document.createElement('span');
+    b.className = 'balloon';
+    b.id = `balloon-${i}`;
+    b.textContent = '🎈';
+    balloonsRow.appendChild(b);
   }
-  area.appendChild(dialsRow);
+  area.appendChild(balloonsRow);
+
+  // Word slots
+  const wordDisplay = document.createElement('div');
+  wordDisplay.className = 'hangman-word';
+  wordDisplay.id = 'hangman-word';
+  word.split('').forEach(() => {
+    const slot = document.createElement('span');
+    slot.className = 'hangman-slot';
+    slot.textContent = '_';
+    wordDisplay.appendChild(slot);
+  });
+  area.appendChild(wordDisplay);
+
+  // Letter grid
+  const grid = document.createElement('div');
+  grid.className = 'letter-grid';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'letter-btn';
+    btn.textContent = l;
+    btn.dataset.letter = l;
+    btn.addEventListener('click', () => guessLetter(l));
+    grid.appendChild(btn);
+  });
+  area.appendChild(grid);
 }
 
-function spinDial(index, dir) {
-  lockState.dials[index] = (lockState.dials[index] + dir + 26) % 26;
-  const letter = String.fromCharCode(65 + lockState.dials[index]);
-  const dialEl = document.getElementById(`dial-${index}`);
-  dialEl.textContent = letter;
+function guessLetter(letter) {
+  const s = hangmanState;
+  if (s.done || s.guessed.has(letter)) return;
+  s.guessed.add(letter);
 
-  if (letter === lockState.word[index]) {
-    dialEl.classList.add('correct');
-  } else {
-    dialEl.classList.remove('correct');
-  }
+  const btn = document.querySelector(`.letter-btn[data-letter="${letter}"]`);
 
-  if (lockState.dials.every((d, i) => String.fromCharCode(65 + d) === lockState.word[i])) {
-    document.getElementById('lock-emoji').textContent = '🔓';
-    document.getElementById('hint-text').textContent = '🎉 you cracked it!!';
-    setTimeout(() => finishLevel(), 900);
-  }
-}
-
-// ======== KEY ========
-function loadKey(level) {
-  const { word, decoys } = level;
-  const area = document.getElementById('game-area');
-
-  const allKeys = [word, ...decoys].sort(() => Math.random() - 0.5);
-  const emojis = ['🗝️', '🔑', '✨', '💫'];
-
-  const lockDisplay = document.createElement('span');
-  lockDisplay.className = 'lock-display';
-  lockDisplay.id = 'key-lock';
-  lockDisplay.textContent = '🎁🔒';
-  area.appendChild(lockDisplay);
-
-  const prompt = document.createElement('p');
-  prompt.className = 'key-prompt';
-  prompt.textContent = 'which key opens your gift?';
-  area.appendChild(prompt);
-
-  const keysRow = document.createElement('div');
-  keysRow.className = 'keys-row';
-
-  allKeys.forEach((label, i) => {
-    const btn = document.createElement('div');
-    btn.className = 'key-choice';
-    btn.innerHTML = `<span class="key-emoji">${emojis[i]}</span><span class="key-label">${label}</span>`;
-    btn.addEventListener('click', () => {
-      if (label === word) {
-        document.getElementById('key-lock').textContent = '🎁✨';
-        document.getElementById('hint-text').textContent = '🎉 you found it!!';
-        document.querySelectorAll('.key-choice').forEach(k => k.style.pointerEvents = 'none');
-        setTimeout(() => finishLevel(), 900);
-      } else {
-        document.getElementById('hint-text').textContent = 'not that one! 🙈';
-        btn.classList.add('wrong');
-        setTimeout(() => btn.classList.remove('wrong'), 500);
+  if (s.word.includes(letter)) {
+    btn.classList.add('correct');
+    // Reveal matching slots
+    const slots = document.querySelectorAll('.hangman-slot');
+    s.word.split('').forEach((l, i) => {
+      if (l === letter) {
+        slots[i].textContent = letter;
+        slots[i].classList.add('revealed');
       }
     });
-    keysRow.appendChild(btn);
+    // Win check
+    if (s.word.split('').every(l => s.guessed.has(l))) {
+      document.getElementById('hint-text').textContent = '🎉 you got it!!';
+      s.done = true;
+      setTimeout(() => finishLevel(), 900);
+    }
+  } else {
+    btn.classList.add('absent');
+    const balloon = document.getElementById(`balloon-${s.wrongCount}`);
+    balloon.textContent = '🫧';
+    balloon.classList.add('popped');
+    s.wrongCount++;
+    if (s.wrongCount >= s.maxWrong) {
+      // Reveal all
+      const slots = document.querySelectorAll('.hangman-slot');
+      s.word.split('').forEach((l, i) => {
+        slots[i].textContent = l;
+        slots[i].classList.add('revealed');
+      });
+      document.getElementById('hint-text').textContent = `it was ${s.word.toLowerCase()}! 💕 onwards~`;
+      s.done = true;
+      setTimeout(() => finishLevel(), 1600);
+    }
+  }
+  btn.disabled = true;
+}
+
+// ======== MULTIPLE CHOICE ========
+function loadChoice(level) {
+  const { question, choices, reactions } = level;
+  const area = document.getElementById('game-area');
+
+  const q = document.createElement('p');
+  q.className = 'mc-question';
+  q.textContent = question;
+  area.appendChild(q);
+
+  const choicesEl = document.createElement('div');
+  choicesEl.className = 'mc-choices';
+
+  choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'mc-btn';
+    btn.textContent = choice;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mc-btn').forEach(b => {
+        b.style.pointerEvents = 'none';
+        b.classList.add('dimmed');
+      });
+      btn.classList.remove('dimmed');
+      btn.classList.add('selected');
+      document.getElementById('hint-text').textContent = reactions[i];
+      setTimeout(() => finishLevel(), 1200);
+    });
+    choicesEl.appendChild(btn);
   });
-  area.appendChild(keysRow);
+  area.appendChild(choicesEl);
 }
 
 // ---- Level complete ----

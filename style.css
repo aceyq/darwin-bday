@@ -145,104 +145,114 @@ body {
 .wkey.present { background: #ffd6a5; color: #8b5e3c; }
 .wkey.absent  { background: #d4c0c8; color: #fff; }
 
-/* ======== LOCK ======== */
-.lock-emoji {
-  font-size: 3.5rem;
-  margin-bottom: 0.5rem;
-  display: block;
-  transition: all 0.3s;
+/* ======== HANGMAN ======== */
+.balloons-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  font-size: 1.7rem;
+  margin: 0.25rem 0 0.75rem;
 }
 
-.dials-row {
+.balloon { transition: all 0.2s; }
+.balloon.popped {
+  opacity: 0.25;
+  filter: grayscale(1);
+  animation: pop 0.25s ease;
+}
+@keyframes pop {
+  0%   { transform: scale(1.4); }
+  100% { transform: scale(0.8); }
+}
+
+.hangman-word {
   display: flex;
-  gap: 7px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.75rem;
 }
 
-.dial {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.dial-letter {
-  width: 36px;
-  height: 44px;
-  border: 2px solid #f4a7c3;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
+.hangman-slot {
+  font-size: 1.35rem;
   font-weight: 700;
   color: #c96b8e;
-  background: #fff0f5;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  min-width: 22px;
+  text-align: center;
+  border-bottom: 2.5px solid #f4a7c3;
+  padding-bottom: 2px;
   font-family: 'Quicksand', sans-serif;
 }
-.dial-letter.correct {
-  background: #f4a7c3;
-  color: white;
-  border-color: #f4a7c3;
+
+.hangman-slot.revealed {
+  animation: pop-in 0.2s ease;
 }
 
-.dial-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.8rem;
-  color: #f4a7c3;
-  padding: 2px 8px;
-  border-radius: 6px;
-  line-height: 1;
-  touch-action: manipulation;
-}
-.dial-btn:hover { background: #ffe0ec; }
-.dial-btn:active { transform: scale(0.85); }
-
-/* ======== KEY ======== */
-.lock-display {
-  font-size: 3.5rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s;
+@keyframes pop-in {
+  0%   { transform: scale(1.4); color: #f4a7c3; }
+  100% { transform: scale(1);   color: #c96b8e; }
 }
 
-.key-prompt {
-  font-size: 0.9rem;
-  color: #c096a8;
-  margin-bottom: 1rem;
-}
-
-.keys-row {
+.letter-grid {
   display: flex;
-  gap: 12px;
-  justify-content: center;
   flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
 }
 
-.key-choice {
+.letter-btn {
+  width: 31px;
+  height: 31px;
+  border-radius: 8px;
+  border: 1.5px solid #f4c0ce;
+  background: #fff0f5;
+  color: #c96b8e;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.12s;
+}
+.letter-btn:hover:not(:disabled) { background: #ffe0ec; }
+.letter-btn.correct  { background: #f4a7c3; color: white; border-color: #f4a7c3; }
+.letter-btn.absent   { background: #d4c0c8; color: white; border-color: #d4c0c8; }
+.letter-btn:disabled { cursor: default; }
+
+/* ======== MULTIPLE CHOICE ======== */
+.mc-question {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  color: #c96b8e;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.mc-choices {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  padding: 12px 14px;
-  border: 2px solid #f4c0ce;
-  border-radius: 16px;
-  background: #fff0f5;
-  transition: background 0.15s, transform 0.15s;
-  touch-action: manipulation;
+  gap: 10px;
+  width: 100%;
 }
-.key-choice:hover { background: #ffe0ec; transform: scale(1.05); }
-.key-choice:active { transform: scale(0.95); }
-.key-choice.wrong { animation: shake 0.45s ease; }
 
-.key-emoji { font-size: 2.2rem; }
-.key-label { font-size: 0.8rem; font-weight: 600; color: #c96b8e; letter-spacing: 0.05em; }
+.mc-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  border: 2px solid #f4c0ce;
+  background: #fff0f5;
+  color: #c96b8e;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.15s, opacity 0.2s;
+}
+.mc-btn:hover { background: #ffe0ec; transform: scale(1.02); }
+.mc-btn.selected { background: #f4a7c3; color: white; border-color: #f4a7c3; transform: scale(1.04); }
+.mc-btn.dimmed   { opacity: 0.35; }
+
 
 /* ---- final page ---- */
 .final-screen {
