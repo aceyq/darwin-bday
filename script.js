@@ -4,7 +4,7 @@ const levels = [
     type: 'wordle',
     word: 'HAPPY',
     title: 'guess the word 💭',
-    hint: 'like you make me 🥰',
+    hint: '',
     extraHint: 'hint: how do i feel about you? 💕'
   },
   {
@@ -20,10 +20,10 @@ const levels = [
     question: "what's my fav nickname for u?",
     choices: ['beeeebis', 'jpxfrd', 'darwino', 'wiwiwi'],
     reactions: [
-      'correct!! 🩷',
-      'also correct!! 🫣',
-      'heehee 🥰',
-      'yes always 💕'
+      '(all are correct actually... and u know that lol)',
+      '(all are correct actually... and u know that lol)',
+      '(all are correct actually... and u know that lol)',
+      '(all are correct actually... and u know that lol)'
     ]
   }
 ];
