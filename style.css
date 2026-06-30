@@ -1,0 +1,200 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: #fff5f8;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* ---- screens ---- */
+.screen { display: none; width: 100%; min-height: 100vh; align-items: center; justify-content: center; padding: 1.5rem; }
+.screen.active { display: flex; }
+
+.card {
+  background: #ffffff;
+  border-radius: 28px;
+  border: 2px solid #f4c0ce;
+  padding: 2rem 1.75rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- typography ---- */
+.title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.4rem;
+  color: #c96b8e;
+  margin-bottom: 1rem;
+}
+
+.body-text {
+  font-size: 1rem;
+  color: #7a6370;
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+/* ---- button ---- */
+.btn {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background: #f4a7c3;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+.btn:hover { background: #e8899b; transform: scale(1.04); }
+.btn:active { transform: scale(0.97); }
+
+/* ---- game ---- */
+.level-label { font-size: 0.85rem; color: #c96b8e; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: lowercase; }
+
+.answer-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 1.25rem 0 1rem;
+  flex-wrap: wrap;
+}
+
+.answer-slot {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 2px dashed #f4a7c3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #c96b8e;
+  background: #fff0f5;
+  transition: all 0.2s;
+}
+.answer-slot.filled { background: #f9d4e2; border-style: solid; }
+
+.bubble-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.bubble {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffe0ec;
+  border: 2px solid #f4a7c3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #c96b8e;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  user-select: none;
+}
+.bubble:active { transform: scale(0.9); }
+.bubble.used { opacity: 0.25; pointer-events: none; }
+
+.hint { font-size: 0.85rem; color: #c096a8; margin-top: 1rem; min-height: 1.2em; }
+
+/* ---- final page ---- */
+.final-screen {
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.25rem 3rem;
+  background: linear-gradient(160deg, #fff0f5 0%, #ffe8f2 100%);
+}
+
+.final-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3rem;
+  color: #c96b8e;
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.final-message {
+  max-width: 400px;
+  text-align: center;
+  font-size: 1.05rem;
+  color: #7a6370;
+  line-height: 1.85;
+  margin-bottom: 2rem;
+}
+
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.photo-gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 3px solid #f4c0ce;
+}
+
+.video-section { text-align: center; max-width: 420px; width: 100%; margin-bottom: 1.5rem; }
+.video-label { font-family: 'Dancing Script', cursive; font-size: 1.6rem; color: #c96b8e; margin-bottom: 0.75rem; }
+
+video {
+  width: 100%;
+  border-radius: 18px;
+  border: 3px solid #f4c0ce;
+  display: block;
+}
+
+.theater-btn { margin-top: 0.75rem; font-size: 0.9rem; padding: 0.6rem 1.5rem; }
+
+.sign-off {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.8rem;
+  color: #c96b8e;
+  margin-top: 1.5rem;
+}
+
+/* ---- sparkles ---- */
+.sparkles, .final-stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.sparkle {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: #f4a7c3;
+  border-radius: 50%;
+  animation: float-up linear infinite;
+  opacity: 0.6;
+}
+@keyframes float-up {
+  0% { transform: translateY(0) scale(1); opacity: 0.6; }
+  100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
+}

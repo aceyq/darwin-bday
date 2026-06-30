@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>happy birthday bebis 🎂</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- SCREEN 1: Welcome -->
+  <div id="screen-welcome" class="screen active">
+    <div class="sparkles" id="sparkles"></div>
+    <div class="card">
+      <p class="title">hii bebis 🎂</p>
+      <p class="body-text">
+        i know we can't be together for your birthday but i still wanted to make a cute lil gift for you!
+      </p>
+      <p class="body-text">there's a little game to play first… 👀</p>
+      <button class="btn" onclick="startGame()">start your gift ✨</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Letter levels -->
+  <div id="screen-game" class="screen">
+    <div class="card">
+      <p class="level-label" id="level-label">level 1 of 3</p>
+      <p class="title" id="game-prompt">spell <span id="target-word"></span>!</p>
+      <div class="answer-row" id="answer-row"></div>
+      <div class="bubble-grid" id="bubble-grid"></div>
+      <p class="hint" id="hint-text"></p>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Between levels -->
+  <div id="screen-between" class="screen">
+    <div class="card">
+      <p class="title" id="between-msg">yay! 🎉</p>
+      <p class="body-text" id="between-sub"></p>
+      <button class="btn" id="next-btn" onclick="nextLevel()">next →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Final page -->
+  <div id="screen-final" class="screen final-screen">
+    <div class="final-stars" id="final-stars"></div>
+    <p class="final-title">happy birthday 🎉</p>
+    <p class="final-message">
+      you're my favourite person in the whole world and i love you so so much.
+      i hope today feels as special as you are — i'll be thinking about you
+      all day. can't wait to celebrate properly when i see you 💕
+    </p>
+
+    <!-- PHOTO GALLERY — add your photo filenames here -->
+    <div class="photo-gallery">
+      <img src="photos/photo1.jpg" alt="us" />
+      <img src="photos/photo2.jpg" alt="us" />
+      <img src="photos/photo3.jpg" alt="us" />
+      <img src="photos/photo4.jpg" alt="us" />
+    </div>
+
+    <!-- VIDEO — replace video.mp4 with your CapCut export filename -->
+    <div class="video-section">
+      <p class="video-label">one more thing… 🎬</p>
+      <video id="bday-video" controls playsinline>
+        <source src="video.mp4" type="video/mp4" />
+      </video>
+      <button class="btn theater-btn" onclick="goFullscreen()">watch in theater mode 🎞️</button>
+    </div>
+
+    <p class="sign-off">love you always 💌</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
