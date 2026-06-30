@@ -44,7 +44,8 @@ function makeSparkles(containerId, count = 18) {
     s.style.bottom = '-10px';
     s.style.animationDuration = (4 + Math.random() * 6) + 's';
     s.style.animationDelay = (Math.random() * 5) + 's';
-    s.style.width = s.style.height = (4 + Math.random() * 6) + 'px';
+    s.style.fontSize = (8 + Math.random() * 10) + 'px';
+    s.textContent = '♥';
     container.appendChild(s);
   }
 }
